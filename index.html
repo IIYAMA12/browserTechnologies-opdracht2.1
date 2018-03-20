@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title>Image picker and accordeon example</title>
+        <link rel="stylesheet" href="styles/reset.css">
+        <link rel="stylesheet" href="styles/main.min.css">
+    </head>
+    <body>
+        <main>
+
+
+            <section id="accordeon">
+                <ol>
+                    <li>
+                        <details>
+                            <summary>Koop</summary>
+                            <div>
+                                <p>Hates my handwriting</p>
+                            </div>
+                        </details>
+                    </li>
+                    <li>
+                        <details>
+                            <summary>Krijn</summary>
+                            <div>
+                                <p>Hates Aria attributes</p>
+                            </div>
+                        </details>
+                    </li>
+                    <li>
+                        <details>
+                            <summary>Joost</summary>
+                            <div>
+                                <p>Hates people who are too late.</p>
+                            </div>
+                        </details>
+                    </li>
+                </ol>
+            </section>
+            <form id="image-preview">
+                <img src="" alt="">
+                <input type="file" name="image-upload" disabled>
+                <p></p>
+            </form>
+        </main>
+        <script type="text/javascript" src="scripts/image-picker.js"></script>
+        <script type="text/javascript" src="scripts/accordeon.js"></script>
+    </body>
+</html>

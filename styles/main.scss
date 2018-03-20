@@ -1,0 +1,109 @@
+body {
+    font-family: sans-serif;
+}
+
+summary, button {
+    cursor: pointer;
+}
+
+main > * {
+    width: 100vw;
+}
+
+#accordeon {
+    display: grid;
+    $ol-width: 20rem;
+    ol {
+
+        width: $ol-width;
+        max-width: 100vw;
+        position: relative;
+        @media (min-width: $ol-width) {
+            left: calc(100vw - #{$ol-width});
+        }
+    }
+    li {
+        margin-bottom: 1rem;
+    }
+    li, details {
+        box-sizing: border-box;
+    }
+    summary, button {
+        padding: 1rem;
+        background-color: rgb(50, 50, 50);
+        font-size: 1rem;
+        transition: background-color 0.1s;
+        &:hover, &:focus {
+            background-color: rgb(100, 100, 100);
+        }
+        box-shadow: 0 4px 4px rgba(0,0,0,.15);
+    }
+
+    button {
+        color: inherit;
+        width: 100%;
+        border: none;
+        text-align: left;
+    }
+
+    details, section {
+        color: white;
+        background-color: white;
+
+        > div {
+            color: black;
+            height: 3rem;
+            padding: 1rem;
+            transition: height 0.2s, transform 0.2s;
+            transform: translateX(-100%);
+            background-color: white;
+
+            @media (min-width: $ol-width) and (max-width: $ol-width * 2) {
+                transform: translateX(calc(-100vw + #{$ol-width}));
+            }
+            @media (max-width: $ol-width) {
+                transform: translateX(0);
+            }
+            @supports not (box-shadow: 0 4px 4px rgba(0,0,0,.15)) {
+                border: 0.5px solid rgb(150, 150, 150);
+            }
+            box-shadow: 0 4px 4px rgba(0,0,0,.15);
+        }
+    }
+    details {
+        &:not([open]) > div {
+            height: 0;
+            transform: translateX(0%);
+        }
+    }
+    section {
+        &:not(.open) > div {
+            height: 0;
+            transform: translateX(0%);
+        }
+    }
+
+}
+
+@supports (content: "") {
+    #accordeon {
+        li {
+            list-style-type: none;
+        }
+
+        @for $i from 1 through 10 {
+            li:nth-child(#{$i}) summary::after, li:nth-child(#{$i}) button::after {
+              content: " #{$i}";
+            }
+        }
+    }
+    [name="image-upload"] + p::after {
+        display: none;
+        visibility: hidden;
+    }
+    [name="image-upload"]:disabled + p::after {
+        display: unset !important;
+        visibility: unset !important;
+        content: "Waiting for JavaScript.";
+    }
+}
