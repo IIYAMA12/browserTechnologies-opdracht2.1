@@ -259,6 +259,7 @@
 
                 if ("FileReader" in window) {
 
+                    var feedbackElement = document.getElementById("image-preview").getElementsByTagName("p")[0];
                     inputElement.removeAttribute("disabled");
                     inputElement.addEventListener("change", function (e) {
                         var fileList = this.files;
@@ -266,21 +267,46 @@
                         var reader = new FileReader();
                         reader.onload = (function(image) {
                             return function(e) {
-                                image.src = e.target.result;
+                                var source = e.target != undefined ? e.target : e.srcElement;
+
+
+                                if (source.result != undefined) {
+                                    image.src = source.result;
+                                    if (feedbackElement != undefined) {
+                                        feedbackElement.parentElement.removeChild(feedbackElement);
+                                    }
+                                } else {
+                                    if (feedbackElement != undefined) {
+                                        if ("textContent" in document) {
+                                            feedbackElement.textContent = "Upload feature unavailable";
+                                        } else if ("innerHTML" in document) {
+                                            feedbackElement.innerHTML = "Upload feature unavailable";
+                                        }
+                                    }
+                                }
                             };
                         })(document.querySelector("#image-preview img"));
 
                         reader.readAsDataURL(fileList[0]);
                     });
-                    var feedbackElement = document.getElementById("image-preview").getElementsByTagName("p")[0];
+
+
+
+
                     if (feedbackElement != undefined) {
-                        feedbackElement.parentElement.removeChild(feedbackElement);
+                        if ("textContent" in document) {
+                            feedbackElement.textContent = "";
+                        } else if ("innerHTML" in document) {
+                            feedbackElement.innerHTML = "";
+                        }
                     }
                 } else {
                     var feedbackElement = document.getElementById("image-preview").getElementsByTagName("p")[0];
                     if (feedbackElement != undefined) {
                         if ("textContent" in document) {
                             feedbackElement.textContent = "Upload feature unavailable";
+                        } else if ("innerHTML" in document) {
+                            feedbackElement.innerHTML = "Upload feature unavailable";
                         } else {
                             feedbackElement.appendChild(document.createTextNode("Upload feature unavailable."));
                         }
