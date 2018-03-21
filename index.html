@@ -3,128 +3,10 @@
     <head>
         <meta charset="utf-8">
         <title>Image picker and accordeon example</title>
+        <link rel="stylesheet" href="styles/main.css">
     </head>
     <body>
         <style>
-            body {
-                font-family: sans-serif;
-            }
-
-            summary, button {
-                cursor: pointer;
-            }
-
-            main > * {
-                width: 100vw;
-            }
-
-            #accordeon {
-                display: grid;
-            }
-
-            #accordeon ol {
-                width: 20rem;
-                max-width: 100vw;
-                position: relative;
-            }
-
-            @media (min-width: 20rem) {
-                #accordeon ol {
-                    left: calc(100vw - 20rem);
-                }
-            }
-
-            #accordeon li {
-                margin-bottom: 1rem;
-            }
-
-            #accordeon li, #accordeon details {
-                box-sizing: border-box;
-            }
-
-            #accordeon summary, #accordeon button {
-                padding: 1rem;
-                background-color: #323232;
-                font-size: 1rem;
-                transition: background-color 0.1s;
-                box-shadow: 0 4px 4px rgba(0, 0, 0, 0.15);
-            }
-
-            #accordeon summary:hover, #accordeon summary:focus, #accordeon button:hover, #accordeon button:focus {
-                background-color: #646464;
-            }
-
-            #accordeon button {
-                color: inherit;
-                width: 100%;
-                border: none;
-                text-align: left;
-            }
-
-            #accordeon details, #accordeon section {
-                color: white;
-                background-color: white;
-            }
-
-            #accordeon details > div, #accordeon section > div {
-                color: black;
-                height: 3rem;
-                padding: 1rem;
-                transition: height 0.2s, transform 0.2s;
-                transform: translateX(-100%);
-                background-color: #fafffa;
-                box-shadow: 0 4px 4px rgba(0, 0, 0, 0.15);
-            }
-
-            @media (min-width: 20rem) and (max-width: 40rem) {
-                #accordeon details > div, #accordeon section > div {
-                    transform: translateX(calc(-100vw + 20rem));
-                }
-            }
-
-            @media (max-width: 20rem) {
-                #accordeon details > div, #accordeon section > div {
-                    transform: translateX(0);
-                }
-            }
-
-            @supports not (box-shadow: 0 4px 4px rgba(0, 0, 0, 0.15)) {
-                #accordeon details > div, #accordeon section > div {
-                    border: 0.5px solid #969696;
-                }
-            }
-
-            #accordeon details:not([open]) > div {
-                height: 0;
-                transform: translateX(0%);
-            }
-
-            #accordeon section:not(.open) > div {
-                height: 0;
-                transform: translateX(0%);
-            }
-
-            @supports (content: "") {
-                #accordeon ol {
-                    counter-reset: section;
-                    list-style-type: none;
-                }
-                #accordeon li {
-                    counter-increment: section;
-                    list-style-type: inherit;
-                }
-                #accordeon summary::after, #accordeon button::after {
-                    content: " " counter(section);
-                }
-                input + p {
-                    display: none;
-                    visibility: hidden;
-                }
-                input:disabled + p {
-                    display: unset !important;
-                    visibility: unset !important;
-                }
-            }
 
         </style>
         <main>
@@ -136,7 +18,7 @@
                         <details>
                             <summary>Koop</summary>
                             <div>
-                                <p>Hates my handwriting</p>
+                                <p>Likes my handwriting. (not)</p>
                             </div>
                         </details>
                     </li>
@@ -144,7 +26,7 @@
                         <details>
                             <summary>Krijn</summary>
                             <div>
-                                <p>Hates Aria attributes</p>
+                                <p>Likes Aria attributes (not)</p>
                             </div>
                         </details>
                     </li>
@@ -152,7 +34,7 @@
                         <details>
                             <summary>Joost</summary>
                             <div>
-                                <p>Hates people who are too late.</p>
+                                <p>Likes it, when people who are too late. (not)</p>
                             </div>
                         </details>
                     </li>
@@ -200,23 +82,44 @@
 
                 ///////////////////////////
                 // manually show details //
-                var showDetails = function (e) {
-                    var sections = document.getElementsByTagName("ol")[0].getElementsByTagName("section");
-
+                var openCustomAccordeon = function (e) {
                     var source = e.target != undefined ? e.target : e.srcElement;
+                    if (source.tagName === "BUTTON") {
+                        var sections = document.getElementsByTagName("ol")[0].getElementsByTagName("section");
 
-                    var parentElement = source.parentElement; //!= undefined ? source.parentElement != undefined : parentElement.parentNode
+                        var parentElement = source.parentElement; //!= undefined ? source.parentElement != undefined : parentElement.parentNode
 
-                    // get the previous state of the clicked button //
-                    var previousState = parentElement.className === "open";
+                        // get the previous state of the clicked button //
+                        var previousState = parentElement.className === "open";
 
-                    // clear all states //
-                    for (var i = 0; i < sections.length; i++) {
-                        sections[i].className = "";
+                        // clear all states //
+                        for (var i = 0; i < sections.length; i++) {
+                            sections[i].className = "";
+                        }
+
+                        // Toggle the state //
+                        parentElement.className = !previousState ? "open" : "";
                     }
+                };
 
-                    // Toggle the state //
-                    parentElement.className = !previousState ? "open" : "";
+                var openAccordeon = function (e) {
+                    var source = e.target != undefined ? e.target : e.srcElement;
+                    if (source.tagName === "SUMMARY") {
+                        var details = document.getElementsByTagName("ol")[0].getElementsByTagName("details");
+
+                        var parentElement = source.parentElement; //!= undefined ? source.parentElement != undefined : parentElement.parentNode
+
+                        // get the previous state of the clicked button //
+                        var previousState = parentElement.getAttribute("open") === "";
+
+                        // clear all states //
+                        for (var i = 0; i < details.length; i++) {
+                            details[i].removeAttribute("open");
+                        }
+
+                        // Toggle the state //
+                        parentElement[(previousState ? "setAttribute" : "removeAttribute")]("open", "");
+                    }
                 };
 
                 //////////////////////////////////////////////
@@ -232,7 +135,7 @@
                         var sectionElement = replaceTags(detailElement, "section");
                         var buttonElement = replaceTags(sectionElement.getElementsByTagName("summary")[0],"button");
 
-                        (buttonElement.addEventListener != undefined ? buttonElement.addEventListener : buttonElement.attachEvent)("click", showDetails);
+                        (buttonElement.addEventListener != undefined ? buttonElement.addEventListener : buttonElement.attachEvent)("click", openCustomAccordeon);
                     }
 
                     // custom styling //
@@ -243,7 +146,15 @@
                         document.getElementsByTagName("head")[0].appendChild(fallBackAccordeonStyle);
                     }
                 } else {
-
+                    var detailElements = (Array.from != undefined ? Array.from : convertListToArray)(document.getElementsByTagName("ol")[0].getElementsByTagName("details"));
+                    for (var i = 0; i < detailElements.length; i++) {
+                        var detailElement = detailElements[i];
+                        var summary = detailElement.getElementsByTagName("summary")[0];
+                        if (summary != undefined) {
+                            console.log("add summary", summary);
+                            (summary.addEventListener != undefined ? summary.addEventListener : summary.attachEvent)("click", openAccordeon);
+                        }
+                    }
                 }
             })();
         </script>
@@ -286,7 +197,7 @@
                                     }
                                 }
                             };
-                        })(document.querySelector("#image-preview img"));
+                        })(document.getElementById("image-preview").getElementsByTagName("img")[0]);
 
                         reader.readAsDataURL(fileList[0]);
                     });
