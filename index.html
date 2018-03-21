@@ -3,10 +3,130 @@
     <head>
         <meta charset="utf-8">
         <title>Image picker and accordeon example</title>
-        <link rel="stylesheet" href="styles/reset.css">
-        <link rel="stylesheet" href="styles/main.min.css">
     </head>
     <body>
+        <style>
+            body {
+                font-family: sans-serif;
+            }
+
+            summary, button {
+                cursor: pointer;
+            }
+
+            main > * {
+                width: 100vw;
+            }
+
+            #accordeon {
+                display: grid;
+            }
+
+            #accordeon ol {
+                width: 20rem;
+                max-width: 100vw;
+                position: relative;
+            }
+
+            @media (min-width: 20rem) {
+                #accordeon ol {
+                    left: calc(100vw - 20rem);
+                }
+            }
+
+            #accordeon li {
+                margin-bottom: 1rem;
+            }
+
+            #accordeon li, #accordeon details {
+                box-sizing: border-box;
+            }
+
+            #accordeon summary, #accordeon button {
+                padding: 1rem;
+                background-color: #323232;
+                font-size: 1rem;
+                transition: background-color 0.1s;
+                box-shadow: 0 4px 4px rgba(0, 0, 0, 0.15);
+            }
+
+            #accordeon summary:hover, #accordeon summary:focus, #accordeon button:hover, #accordeon button:focus {
+                background-color: #646464;
+            }
+
+            #accordeon button {
+                color: inherit;
+                width: 100%;
+                border: none;
+                text-align: left;
+            }
+
+            #accordeon details, #accordeon section {
+                color: white;
+                background-color: white;
+            }
+
+            #accordeon details > div, #accordeon section > div {
+                color: black;
+                height: 3rem;
+                padding: 1rem;
+                transition: height 0.2s, transform 0.2s;
+                transform: translateX(-100%);
+                background-color: #fafffa;
+                box-shadow: 0 4px 4px rgba(0, 0, 0, 0.15);
+            }
+
+            @media (min-width: 20rem) and (max-width: 40rem) {
+                #accordeon details > div, #accordeon section > div {
+                    transform: translateX(calc(-100vw + 20rem));
+                }
+            }
+
+            @media (max-width: 20rem) {
+                #accordeon details > div, #accordeon section > div {
+                    transform: translateX(0);
+                }
+            }
+
+            @supports not (box-shadow: 0 4px 4px rgba(0, 0, 0, 0.15)) {
+                #accordeon details > div, #accordeon section > div {
+                    border: 0.5px solid #969696;
+                }
+            }
+
+            #accordeon details:not([open]) > div {
+                height: 0;
+                transform: translateX(0%);
+            }
+
+            #accordeon section:not(.open) > div {
+                height: 0;
+                transform: translateX(0%);
+            }
+
+            @supports (content: "") {
+                #accordeon ol {
+                    counter-reset: section;
+                    list-style-type: none;
+                }
+                #accordeon li {
+                    counter-increment: section;
+                    list-style-type: inherit;
+                }
+                #accordeon summary::after, #accordeon button::after {
+                    content: " " counter(section);
+                }
+                input + p {
+                    display: none;
+                    visibility: hidden;
+                }
+                input:disabled + p {
+                    display: unset !important;
+                    visibility: unset !important;
+                }
+            }
+
+        </style>
         <main>
 
 
@@ -44,7 +164,126 @@
                 <p>Waiting for JavaScript.</p>
             </form>
         </main>
-        <script type="text/javascript" src="scripts/image-picker.js"></script>
-        <script type="text/javascript" src="scripts/accordeon.js"></script>
+        <script>
+            (function () {
+
+                //////////////////////////////////////
+                // function to replace element tags //
+                var replaceTags = function (startElement, tag) {
+                    if (startElement != undefined && tag != undefined) {
+                        // collect information of the element //
+                        var content = startElement.innerHTML;
+                        var container = startElement.parentElement;
+
+                        // make the new element //
+                        var newElement = document.createElement(tag);
+
+                        // move the old content inside //
+                        newElement.innerHTML = content;
+
+                        // replace the tag //
+                        container.replaceChild(newElement, startElement);
+
+                        return newElement;
+                    }
+                };
+
+                /////////////////////////////////////////////////
+                // replacement for Array.from if not supported //
+                var convertListToArray = function (list) {
+                    var newArray = [];
+                    for (var i = 0; i < list.length; i++) {
+                        newArray[newArray.length] = list[i];
+                    }
+                    return newArray;
+                };
+
+                ///////////////////////////
+                // manually show details //
+                var showDetails = function (e) {
+                    var sections = document.getElementsByTagName("ol")[0].getElementsByTagName("section");
+
+                    // get the previous state of the clicked button //
+                    var previousState = e.target.parentElement.classList.contains("open");
+
+                    // clear all states //
+                    for (var i = 0; i < sections.length; i++) {
+                        sections[i].classList.remove("open");
+                    }
+
+                    // Toggle the state //
+                    e.target.parentElement.classList.toggle("open", !previousState);
+                };
+
+                //////////////////////////////////////////////
+                // check of the detail element is supported //
+                if (!("open" in document.createElement('details'))) {
+
+                    // get all detailElements //
+                    var detailElements = (Array.from != undefined ? Array.from : convertListToArray)(document.getElementsByTagName("ol")[0].getElementsByTagName("details"));
+
+                    // replace tags and add manual control //
+                    for (var i = 0; i < detailElements.length; i++) {
+                        var detailElement = detailElements[i];
+                        var sectionElement = replaceTags(detailElement, "section");
+                        var buttonElement = replaceTags(sectionElement.getElementsByTagName("summary")[0],"button");
+
+                        (buttonElement.addEventListener != undefined ? buttonElement.addEventListener : buttonElement.attachEvent)("click", showDetails);
+                    }
+
+                    // custom styling //
+                    if ("appendChild" in document) {
+                        var fallBackAccordeonStyle = document.createElement("link");
+                        fallBackAccordeonStyle.rel = "stylesheet";
+                        fallBackAccordeonStyle.href = "styles/accordeon-fallback.min.css";
+                        document.getElementsByTagName("head")[0].appendChild(fallBackAccordeonStyle);
+                    }
+                } else {
+
+                }
+            })();
+        </script>
+        <script>
+            (function (){
+                var inputElement = document.getElementById("image-preview").getElementsByTagName("input")[0];
+
+                ////////////////////////
+                // disable FileReader //
+
+                // delete window.FileReader;
+
+
+
+                if ("FileReader" in window) {
+
+                    inputElement.removeAttribute("disabled");
+                    inputElement.addEventListener("change", function (e) {
+                        var fileList = this.files;
+                    // https://developer.mozilla.org/en-US/docs/Web/API/FileReader
+                        var reader = new FileReader();
+                        reader.onload = (function(image) {
+                            return function(e) {
+                                image.src = e.target.result;
+                            };
+                        })(document.querySelector("#image-preview img"));
+
+                        reader.readAsDataURL(fileList[0]);
+                    });
+                    var feedbackElement = document.getElementById("image-preview").getElementsByTagName("p")[0];
+                    if (feedbackElement != undefined) {
+                        feedbackElement.parentElement.removeChild(feedbackElement);
+                    }
+                } else {
+                    var feedbackElement = document.getElementById("image-preview").getElementsByTagName("p")[0];
+                    if (feedbackElement != undefined) {
+                        if ("textContent" in document) {
+                            feedbackElement.textContent = "Upload feature unavailable";
+                        } else {
+                            feedbackElement.appendChild(document.createTextNode("Upload feature unavailable."));
+                        }
+                    }
+                }
+            })();
+        </script>
     </body>
 </html>
