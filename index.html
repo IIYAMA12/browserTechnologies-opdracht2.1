@@ -203,8 +203,11 @@
                 var showDetails = function (e) {
                     var sections = document.getElementsByTagName("ol")[0].getElementsByTagName("section");
 
+                    var source = e.target != undefined ? e.target : e.srcElement;
+                    var parentElement = source.parentElement != undefined ? source.parentElement != undefined : parentElement.parentNode
+
                     // get the previous state of the clicked button //
-                    var previousState = e.target.parentElement.classList.contains("open");
+                    var previousState = parentElement.classList.contains("open");
 
                     // clear all states //
                     for (var i = 0; i < sections.length; i++) {
@@ -212,7 +215,7 @@
                     }
 
                     // Toggle the state //
-                    e.target.parentElement.classList.toggle("open", !previousState);
+                    parentElement.classList.toggle("open", !previousState);
                 };
 
                 //////////////////////////////////////////////
