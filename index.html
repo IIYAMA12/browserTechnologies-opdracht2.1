@@ -221,7 +221,7 @@
 
                 //////////////////////////////////////////////
                 // check of the detail element is supported //
-                if (("open" in document.createElement('details'))) {
+                if (!("open" in document.createElement('details'))) {
 
                     // get all detailElements //
                     var detailElements = (Array.from != undefined ? Array.from : convertListToArray)(document.getElementsByTagName("ol")[0].getElementsByTagName("details"));
