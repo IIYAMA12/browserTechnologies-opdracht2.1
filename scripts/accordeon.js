@@ -60,7 +60,8 @@
             var detailElement = detailElements[i];
             var sectionElement = replaceTags(detailElement, "section");
             var buttonElement = replaceTags(sectionElement.getElementsByTagName("summary")[0],"button");
-            buttonElement.addEventListener("click", showDetails);
+
+            (buttonElement.addEventListener != undefined ? buttonElement.addEventListener : buttonElement.attachEvent)("click", showDetails);
         }
 
         // custom styling //
