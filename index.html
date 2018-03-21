@@ -204,23 +204,24 @@
                     var sections = document.getElementsByTagName("ol")[0].getElementsByTagName("section");
 
                     var source = e.target != undefined ? e.target : e.srcElement;
-                    var parentElement = source.parentElement != undefined ? source.parentElement != undefined : parentElement.parentNode
+
+                    var parentElement = source.parentElement; //!= undefined ? source.parentElement != undefined : parentElement.parentNode
 
                     // get the previous state of the clicked button //
-                    var previousState = parentElement.classList.contains("open");
+                    var previousState = parentElement.className === "open";
 
                     // clear all states //
                     for (var i = 0; i < sections.length; i++) {
-                        sections[i].classList.remove("open");
+                        sections[i].className = "";
                     }
 
                     // Toggle the state //
-                    parentElement.classList.toggle("open", !previousState);
+                    parentElement.className = !previousState ? "open" : "";
                 };
 
                 //////////////////////////////////////////////
                 // check of the detail element is supported //
-                if (!("open" in document.createElement('details'))) {
+                if (("open" in document.createElement('details'))) {
 
                     // get all detailElements //
                     var detailElements = (Array.from != undefined ? Array.from : convertListToArray)(document.getElementsByTagName("ol")[0].getElementsByTagName("details"));
