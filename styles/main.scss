@@ -87,15 +87,23 @@ main > * {
 
 @supports (content: "") {
     #accordeon {
-        li {
+        ol {
+            counter-reset: section;
             list-style-type: none;
         }
-
-        @for $i from 1 through 10 {
-            li:nth-child(#{$i}) summary::after, li:nth-child(#{$i}) button::after {
-              content: " #{$i}";
-            }
+        li {
+            counter-increment: section;
+            list-style-type: inherit;
         }
+        summary::after, button::after {
+            content: " " counter(section);
+        }
+
+        // @for $i from 1 through 10 {
+        //     li:nth-child(#{$i}) summary::after, li:nth-child(#{$i}) button::after {
+        //       content: " #{$i}";
+        //     }
+        // }
     }
     input + p { //::after
         display: none;

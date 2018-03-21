@@ -97,38 +97,16 @@ main > * {
 }
 
 @supports (content: "") {
-    #accordeon li {
+    #accordeon ol {
+        counter-reset: section;
         list-style-type: none;
     }
-    #accordeon li:nth-child(1) summary::after, #accordeon li:nth-child(1) button::after {
-        content: " 1";
+    #accordeon li {
+        counter-increment: section;
+        list-style-type: inherit;
     }
-    #accordeon li:nth-child(2) summary::after, #accordeon li:nth-child(2) button::after {
-        content: " 2";
-    }
-    #accordeon li:nth-child(3) summary::after, #accordeon li:nth-child(3) button::after {
-        content: " 3";
-    }
-    #accordeon li:nth-child(4) summary::after, #accordeon li:nth-child(4) button::after {
-        content: " 4";
-    }
-    #accordeon li:nth-child(5) summary::after, #accordeon li:nth-child(5) button::after {
-        content: " 5";
-    }
-    #accordeon li:nth-child(6) summary::after, #accordeon li:nth-child(6) button::after {
-        content: " 6";
-    }
-    #accordeon li:nth-child(7) summary::after, #accordeon li:nth-child(7) button::after {
-        content: " 7";
-    }
-    #accordeon li:nth-child(8) summary::after, #accordeon li:nth-child(8) button::after {
-        content: " 8";
-    }
-    #accordeon li:nth-child(9) summary::after, #accordeon li:nth-child(9) button::after {
-        content: " 9";
-    }
-    #accordeon li:nth-child(10) summary::after, #accordeon li:nth-child(10) button::after {
-        content: " 10";
+    #accordeon summary::after, #accordeon button::after {
+        content: " " counter(section);
     }
     input + p {
         display: none;
